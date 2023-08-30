@@ -1,11 +1,11 @@
-import React, { UseMemo } from "react";
+import React, { useMemo } from "react";
 
 const PeerContext = React.createContext(null);
 
 export const usePeer = () => React.useContext(PeerContext);
 
 export const PeerProvider = (props) => {
-    const peer = UseMemo(
+    const peer = useMemo(
         () =>
         new RTCPeerConnection({
             iceServers: [
@@ -26,9 +26,15 @@ export const PeerProvider = (props) => {
         return offer; 
     };
 
+    const createAnswer = async (offer) => {
+        await peer.setRemoteDescription(offer);
+        const answer = await peer.createAnswer();
+        await peer.setLocalDescription(answer);
+        return answer;
+    };
 
     return (
-        <PeerContext.Provider value={{ peer}}>
+        <PeerContext.Provider value={{ peer, createOffer, createAnswer }}>
             {props.children}
         </PeerContext.Provider>
     )

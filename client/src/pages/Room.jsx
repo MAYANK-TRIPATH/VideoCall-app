@@ -6,9 +6,10 @@
 
   const RoomPage = () => {
     const { socket } = useSocket();
-    const { peer, createOffer, createAnswer, setRemoteAns } = usePeer();
+    const { peer, createOffer, createAnswer, setRemoteAns, sendStream, remoteStream } = usePeer();
 
     const [myStream, setMyStream] = useState(null);
+
      
     const handleNewUserJoined = useCallback(async (data) => {
         const { emailId } = data;
@@ -31,14 +32,14 @@
      const handleCallAccepted = useCallback(async(data) => {
         const { ans } = data;
         console.log("Call got Accepted", ans)
-        await setRemoteAns(ans)
+        await setRemoteAns(ans);
      }, [setRemoteAns]
      );
 
      const getUserMediaStream = useCallback(async() => {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
         setMyStream(stream);
-     }, []
+     }, [sendStream]
      );
 
     useEffect(() => {
@@ -61,7 +62,9 @@
     return (
         <div className="room-page-container">
             <h1>Room Page</h1>
+            <button onClick={(e) => sendStream(myStream)}>Send My Video</button>
             <ReactPlayer url= {myStream} playing  />
+            <ReactPlayer url= {remoteStream} playing  />
         </div>
     )
   };

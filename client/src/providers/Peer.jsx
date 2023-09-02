@@ -48,14 +48,16 @@ export const PeerProvider = (props) => {
    const handleTrackEvent = useCallback((ev) => {
     const streams = ev.streams;
     setRemoteStream(streams[0])
-   }, [])
+   }, []);
+
+ 
 
    useEffect(() => {
     peer.addEventListener('track', handleTrackEvent);
     return () => {
-        peer.removeEventListener('track', handleTrackEvent)
+        peer.removeEventListener('track', handleTrackEvent);
     }
-   }, [handleTrackEvent,  peer])
+   }, [ handleTrackEvent,  peer]);
 
     return (
         <PeerContext.Provider value={{ peer, createOffer, createAnswer, setRemoteAns, sendStream, remoteStream }}> 
